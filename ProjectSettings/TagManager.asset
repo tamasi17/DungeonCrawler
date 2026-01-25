@@ -8,11 +8,13 @@ TagManager:
   - Water
   - Grass
   - NPC
+  - Door
+  - Chest
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
   - 
