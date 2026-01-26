@@ -1,0 +1,35 @@
+Text from: http://www.geo.sbg.ac.at/borromae/rk_afont.htm
+        ------------------------------------------------------------
+I have created a few TrueType Fonts for Windows. By now these include the
+meroitic scripts (hieroglyphics and demotic) and the oldpersian Cuneiforms.
+Just click onto the character table (or the filename) to download the *.TTF
+files. You can use the Fonts free of charge and also pass them on to your
+friends, but please can everybody who uses the fonts write a postcard to
+me, so that I know, if it is worth the effort?
+
+My address:
+     R. Kainhofer
+     Pichl 27
+     A - 5441 Abtenau
+     AUSTRIA.
+
+Thanks!
+           -----------------------------------------------------
+
+           -----------------------------------------------------
+
+Under Development:
+
+      Greek with accents (always wanted, never found)
+      Ugaritic
+      and others...
+
+If you have suggestions, what other languages I could turn into a TrueType
+Font for windows, e-mail me!!
+
+    --------------------------------------------------------------------
+See also the HOMEPAGE of my school (in German)
+---------------------------------------------------------------------------
+
+Webmaster:
+     Reinhold Kainhofer, WSchin@ping.at
