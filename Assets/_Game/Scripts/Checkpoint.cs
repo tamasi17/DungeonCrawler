@@ -2,18 +2,16 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private Color activeColor = Color.green;
     private bool isActivated = false;
-    private SpriteRenderer sr;
+    private Animator anim; // Reference to the Animator
 
     private void Awake()
     {
-        sr = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>(); // Get the Animator component
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Only trigger if we haven't already, and it's the player
         if (!isActivated && other.CompareTag("Player"))
         {
             ActivateCheckpoint();
@@ -24,10 +22,13 @@ public class Checkpoint : MonoBehaviour
     {
         isActivated = true;
 
-        // Save the EXACT position of this object to the Manager
+        // Save Position
         CheckpointManager.SetCheckpoint(transform.position);
 
-        // Visual Feedback (Turn Green)
-        if (sr != null) sr.color = activeColor;
+        // Play Animation
+        if (anim != null)
+        {
+            anim.SetBool("IsActive", true); // Switches to the Waving state
+        }
     }
 }
