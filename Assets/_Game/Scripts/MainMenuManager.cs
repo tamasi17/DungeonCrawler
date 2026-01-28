@@ -4,33 +4,44 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("UI References")]
-    [SerializeField] private Button loadGameButton;
+    [SerializeField] private Button continueButton;
+    private string sceneToLoad;
 
     private void Start()
     {
-        // Check if we have a saved game. 
-        // We haven't built the Save System yet, so this checks a temporary key.
-        // If "PlayerLevel" exists, we assume a save exists.
-        bool hasSave = PlayerPrefs.HasKey("PlayerLevel");
+        // Try to load data
+        GameData data = SaveSystem.LoadGame();
 
-        // Disable the Continue button if no save exists
-        loadGameButton.interactable = hasSave;
+        if (data != null)
+        {
+            // Save exists! Enable button and remember the level
+            continueButton.interactable = true;
+            sceneToLoad = data.levelToLoad;
+        }
+        else
+        {
+            // No save file? Gray out the button
+            continueButton.interactable = false;
+        }
     }
 
     public void OnNewGameClicked()
     {
-        // Optional: Clear old saves here using PlayerPrefs.DeleteAll();
-        // Load the actual gameplay scene (Index 1)
-        SceneManager.LoadScene(1);
+        // 1. Delete old save (optional, but cleaner)
+        SaveSystem.DeleteSave();
+
+        // 2. Load the first level
+        SceneManager.LoadScene("Level1");
     }
 
     public void OnContinueClicked()
     {
-        // Load the game scene without deleting data
-        SceneManager.LoadScene(1);
+        // Load the level we found in the file
+        if (!string.IsNullOrEmpty(sceneToLoad))
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
     }
-
     public void OnSettingsClicked()
     {
         Debug.Log("Open Settings Menu");

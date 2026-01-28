@@ -1,15 +1,22 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerRespawn : MonoBehaviour
 {
     private void Start()
     {
-        // Check if we have a saved checkpoint in memory
-        if (CheckpointManager.hasCheckpoint)
+        // Get the name of the room we are currently standing in
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // CHECK: Do we have a save? AND Is it for this specific room?
+        if (CheckpointManager.hasCheckpoint && CheckpointManager.lastSceneName == currentScene)
         {
-            // Teleport player instantly
             transform.position = CheckpointManager.lastCheckPointPos;
-            Debug.Log("Player respawned at Checkpoint.");
+            Debug.Log("Restoring Player to Checkpoint.");
+        }
+        else
+        {
+            Debug.Log("No valid checkpoint for this level. Starting at default spawn.");
         }
     }
 }
