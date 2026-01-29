@@ -11,6 +11,7 @@ TagManager:
   - Door
   - Chest
   - CrusherTrap
+  - SettingsMenu
   layers:
   - Default
   - TransparentFX
