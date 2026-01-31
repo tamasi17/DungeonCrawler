@@ -10275,7 +10275,7 @@ MonoBehaviour:
   musicToggle: {fileID: 0}
   sfxToggle: {fileID: 0}
   resDropdown: {fileID: 2095107936}
-  langDropdown: {fileID: 0}
+  langDropdown: {fileID: 281495451}
 --- !u!1 &1672711965
 GameObject:
   m_ObjectHideFlags: 0
