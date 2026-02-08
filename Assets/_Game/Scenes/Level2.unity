@@ -29196,9 +29196,9 @@ GameObject:
   - component: {fileID: 854644380}
   - component: {fileID: 854644383}
   - component: {fileID: 854644382}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29267,7 +29267,7 @@ Transform:
   m_GameObject: {fileID: 854644379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.4, y: 2.7, z: 0.0023922503}
+  m_LocalPosition: {x: -14.4, y: 2.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43924,8 +43924,35 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6439492545973470067, guid: 6ce3007fb024d584882a1279325b2636, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1643669317}
   m_SourcePrefab: {fileID: 100100000, guid: 6ce3007fb024d584882a1279325b2636, type: 3}
+--- !u!1 &1643669315 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6439492545973470067, guid: 6ce3007fb024d584882a1279325b2636, type: 3}
+  m_PrefabInstance: {fileID: 1643669314}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1643669316 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 7773549009064000198, guid: 6ce3007fb024d584882a1279325b2636, type: 3}
+  m_PrefabInstance: {fileID: 1643669314}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1643669317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643669315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 132b91a5f4daddc4494d95f7075419fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiGroup: {fileID: 1643669316}
+  fadeSpeed: 1
 --- !u!1 &1951183174
 GameObject:
   m_ObjectHideFlags: 0
@@ -44106,11 +44133,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1956415839}
   - component: {fileID: 1956415838}
-  - component: {fileID: 1956415840}
   - component: {fileID: 1956415841}
-  m_Layer: 0
+  - component: {fileID: 1956415840}
+  m_Layer: 3
   m_Name: Igloo
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44179,7 +44206,7 @@ Transform:
   m_GameObject: {fileID: 1956415837}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.65, y: 4.09, z: 0.0023922503}
+  m_LocalPosition: {x: 5.65, y: 4.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44232,7 +44259,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.08927393, y: -0.24996614}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -44242,7 +44269,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.25, y: 1.9375}
+  m_Size: {x: 2.7499323, y: 2.4374323}
   m_EdgeRadius: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

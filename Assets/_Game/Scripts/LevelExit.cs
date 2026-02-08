@@ -32,6 +32,12 @@ public class LevelExit : MonoBehaviour
         // they resume at the start of the new level.
         GameData data = new GameData();
         data.levelToLoad = nextSceneName;
+
+        // Pull current stats from the Session
+        data.coins = GameSession.Instance.chest;
+        data.deaths = GameSession.Instance.deaths;
+        data.timePlayed = GameSession.Instance.timePlayed;
+
         SaveSystem.SaveGame(data);
         Debug.Log("Game Saved. Transitioning to: " + nextSceneName);
 

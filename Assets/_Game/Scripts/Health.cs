@@ -33,6 +33,7 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        GameSession.Instance.AddDeath();
         Debug.Log($"{gameObject.name} has died.");
         OnDie?.Invoke();
     }

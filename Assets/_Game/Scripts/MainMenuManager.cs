@@ -36,10 +36,12 @@ public class MainMenu : MonoBehaviour
 
     public void OnContinueClicked()
     {
-        // Load the level we found in the file
-        if (!string.IsNullOrEmpty(sceneToLoad))
+        GameData data = SaveSystem.LoadGame();
+        if (data != null)
         {
-            SceneManager.LoadScene(sceneToLoad);
+            // Restore the session stats before loading level
+            GameSession.Instance.LoadStats(data.coins, data.deaths, data.timePlayed);
+            SceneManager.LoadScene(data.levelToLoad);
         }
     }
     public void OnSettingsClicked()

@@ -8,6 +8,7 @@ public class Chest : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log("Open Chest!");
+        GameSession.Instance.AddChest(1);
 
         // Visual feedback: Disable the sprite to "collect" it (temporary test)
         gameObject.SetActive(false);
