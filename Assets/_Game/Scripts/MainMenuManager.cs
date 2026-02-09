@@ -39,11 +39,17 @@ public class MainMenu : MonoBehaviour
         GameData data = SaveSystem.LoadGame();
         if (data != null)
         {
-            // Restore the session stats before loading level
-            GameSession.Instance.LoadStats(data.chests, data.deaths, data.timePlayed);
+            if (GameSession.Instance != null)
+            {
+                // Restore the session stats (Coins, Deaths, AND Collected Chests)
+                // Make sure this name matches the one in GameSession.cs!
+                GameSession.Instance.LoadDataFromSave(data);
+            }
+
             SceneManager.LoadScene(data.levelToLoad);
         }
     }
+
     public void OnSettingsClicked()
     {
         Debug.Log("Open Settings Menu");

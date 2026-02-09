@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameSession : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class GameSession : MonoBehaviour
     public int deaths = 0;
     public float timePlayed = 0f;
     public bool isTimerRunning = false;
+
+    public HashSet<string> collectedItems = new HashSet<string>();
 
     private void Awake()
     {
@@ -48,12 +51,39 @@ public class GameSession : MonoBehaviour
     }
 
 
-    // Call this when you Load Game to restore saved stats
-    public void LoadStats(int loadedChests, int loadedDeaths, float loadedTime)
+    public bool HasCollected(string id)
     {
-        chests = loadedChests;
-        deaths = loadedDeaths;
-        timePlayed = loadedTime;
+        Debug.Log("Collected item: " + id);
+        return collectedItems.Contains(id);
+    }
+
+    public void AddCollectedItem(string id)
+    {
+        if (!collectedItems.Contains(id))
+        {
+            collectedItems.Add(id);
+            Debug.Log("Added item: " + id);
+        }
+    }
+
+    public void LoadDataFromSave(GameData data)
+    {
+        // 1. Load the stats
+        chests = data.chests; // Make sure variable names match yours (chests vs chestsCollected)
+        deaths = data.deaths;
+        timePlayed = data.timePlayed;
+
+        // 2. Load the list of opened chests (Fixes the "data not recognized" error)
+        collectedItems.Clear();
+        if (data.collectedItemsID != null)
+        {
+            foreach (string id in data.collectedItemsID)
+            {
+                collectedItems.Add(id);
+            }
+        }
+
+        Debug.Log("Game Session loaded successfully.");
     }
 
     public void ResetStats()

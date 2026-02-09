@@ -133,6 +133,7 @@ public void SetMusicVolume(float volume)
             data.chests = GameSession.Instance.chests; 
             data.deaths = GameSession.Instance.deaths;
             data.timePlayed = GameSession.Instance.timePlayed;
+            data.collectedItemsID = new List<string>(GameSession.Instance.collectedItems);
         }
 
         // 3. Write to File
@@ -148,9 +149,7 @@ public void SetMusicVolume(float volume)
        
             if (GameSession.Instance != null)
             {
-                GameSession.Instance.chests = data.chests;
-                GameSession.Instance.deaths = data.deaths;
-                GameSession.Instance.timePlayed = data.timePlayed;
+                GameSession.Instance.LoadDataFromSave(data);
             }
 
             SceneManager.LoadScene(data.levelToLoad);
@@ -159,19 +158,23 @@ public void SetMusicVolume(float volume)
 
 public void DeleteGame()
 {
-    // 1. Delete the physical file
-    SaveSystem.DeleteSave();
+        SaveSystem.DeleteSave();
 
-    // 2. Update UI immediately
-    if (loadButton != null) loadButton.interactable = false;
-    if (deleteSaveButton != null) deleteSaveButton.interactable = false;
+        // Actualizar botones
+        if (loadButton != null) loadButton.interactable = false;
+        if (deleteSaveButton != null) deleteSaveButton.interactable = false;
 
-    // 3. Optional: Reset in-game stats if we are currently playing
-    if (GameSession.Instance != null)
-    {
-        GameSession.Instance.ResetStats();
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.ResetStats();
+        }
+
+        // ARREGLO 3: Si estás jugando, VETE al menú principal
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            GoToMainMenu();
+        }
     }
-}
 
 public void GoToMainMenu()
     {

@@ -1,16 +1,49 @@
 using UnityEngine;
 
-public class Chest : MonoBehaviour, IInteractable
+public class Chest : MonoBehaviour
 {
-    // TODO: Add chest opening animation, sound effects, and item spawning
+    // Escribe un nombre ÚNICO en el inspector para cada cofre (ej: "Level1_Chest_Hidden")
+    [SerializeField] private string chestID;
 
-
-    public void Interact()
+    private void Start()
     {
-        Debug.Log("Open Chest!");
-        GameSession.Instance.AddChest(1);
+        // Generar ID automático si se te olvida ponerlo (usando su posición)
+        if (string.IsNullOrEmpty(chestID))
+        {
+            chestID = transform.position.ToString();
+        }
 
-        // Visual feedback: Disable the sprite to "collect" it (temporary test)
-        gameObject.SetActive(false);
+        // PREGUNTA: ¿Ya me abrieron antes?
+        if (GameSession.Instance != null)
+        {
+            if (GameSession.Instance.HasCollected(chestID))
+            {
+                // Si ya me abrieron, desaparezco antes de que el jugador me vea
+                Destroy(gameObject);
+            }
+        }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Interact();
+        }
+    }
+
+    void Interact()
+    {
+
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.chests++; // Sumar al total
+            GameSession.Instance.AddCollectedItem(chestID); // Recordar ESTE cofre específico
+            Debug.Log("Open Chest!");
+        }
+
+        // Sonido, partículas...
+        Destroy(gameObject);
     }
 }
