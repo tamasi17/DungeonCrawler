@@ -7,7 +7,7 @@ public class GameSession : MonoBehaviour
     public static GameSession Instance;
 
     [Header("Live Stats")]
-    public int chest = 0;
+    public int chests = 0;
     public int deaths = 0;
     public float timePlayed = 0f;
     public bool isTimerRunning = false;
@@ -39,7 +39,7 @@ public class GameSession : MonoBehaviour
 
     public void AddChest(int amount)
     {
-        chest += amount;
+        chests += amount;
     }
 
     public void AddDeath()
@@ -48,12 +48,20 @@ public class GameSession : MonoBehaviour
     }
 
 
-
     // Call this when you Load Game to restore saved stats
     public void LoadStats(int loadedChests, int loadedDeaths, float loadedTime)
     {
-        chest = loadedChests;
+        chests = loadedChests;
         deaths = loadedDeaths;
         timePlayed = loadedTime;
+    }
+
+    public void ResetStats()
+    {
+        chests = 0;
+        deaths = 0;
+        timePlayed = 0f;
+
+        Debug.Log("Game Session stats reset to zero.");
     }
 }

@@ -36,9 +36,22 @@ public static class SaveSystem
 
     public static void DeleteSave()
     {
+        string path = Application.persistentDataPath + "/savefile.json";
+
         if (File.Exists(path))
         {
             File.Delete(path);
+            Debug.Log("Save file deleted from: " + path);
         }
+        else
+        {
+            Debug.LogWarning("No save file found to delete.");
+        }
+    }
+
+    public static bool SaveFileExists()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        return File.Exists(path);
     }
 }

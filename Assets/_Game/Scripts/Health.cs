@@ -6,6 +6,7 @@ public class Health : MonoBehaviour, IDamageable
     [Header("Settings")]
     [SerializeField] private int maxHealth = 100;
     private int currentHealth;
+    public bool isDead = false;
 
     [Header("Events")]
     // This allows us to drag-and-drop functions in the Inspector (like playing a sound or particle)
@@ -33,6 +34,9 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        if (isDead) return;
+        isDead = true;
+        GetComponent<PlayerAnimator>().enabled = false;
         GameSession.Instance.AddDeath();
         Debug.Log($"{gameObject.name} has died.");
         OnDie?.Invoke();

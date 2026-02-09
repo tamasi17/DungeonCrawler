@@ -3,7 +3,7 @@ public class GameData
 {
     // We save the Name of the level the player should start in
     public string levelToLoad;
-    public int coins;     
+    public int chests;     
     public int deaths;     
     public float timePlayed;
 
@@ -13,7 +13,7 @@ public class GameData
     public GameData()
     {
         levelToLoad = "Level1";
-        coins = 0;
+        chests = 0;
         deaths = 0;
         timePlayed = 0;
     }

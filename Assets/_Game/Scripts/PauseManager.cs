@@ -38,6 +38,7 @@ public class PauseManager : MonoBehaviour
         if (!isMainMenu)
         {
             Time.timeScale = 0f; // Freezes physics and movement
+
         }
     }
 

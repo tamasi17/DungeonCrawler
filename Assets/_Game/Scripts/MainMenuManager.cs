@@ -40,7 +40,7 @@ public class MainMenu : MonoBehaviour
         if (data != null)
         {
             // Restore the session stats before loading level
-            GameSession.Instance.LoadStats(data.coins, data.deaths, data.timePlayed);
+            GameSession.Instance.LoadStats(data.chests, data.deaths, data.timePlayed);
             SceneManager.LoadScene(data.levelToLoad);
         }
     }

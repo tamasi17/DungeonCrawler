@@ -11,6 +11,13 @@ public class PlayerRespawn : MonoBehaviour
         // CHECK: Do we have a save? AND Is it for this specific room?
         if (CheckpointManager.hasCheckpoint && CheckpointManager.lastSceneName == currentScene)
         {
+            Health playerHealth = GetComponent<Health>();
+            if (playerHealth != null)
+            {
+                playerHealth.isDead = false;
+            }
+
+            GetComponent<PlayerAnimator>().enabled = true;
             transform.position = CheckpointManager.lastCheckPointPos;
             Debug.Log("Restoring Player to Checkpoint.");
         }

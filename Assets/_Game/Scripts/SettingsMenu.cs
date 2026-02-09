@@ -1,67 +1,106 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
-using TMPro; // For Dropdown
+using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour
 {
     [Header("Audio")]
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private Slider musicSlider, sfxSlider;
-    [SerializeField] private Toggle musicToggle, sfxToggle; // Added Toggles
+    // [SerializeField] private Toggle musicToggle, sfxToggle; // Optional if you want mute buttons
 
     [Header("Resolution")]
     [SerializeField] private TMP_Dropdown resDropdown;
 
     [Header("Language")]
-    [SerializeField] private TMP_Dropdown langDropdown; // Added Language Dropdown
+    [SerializeField] private TMP_Dropdown langDropdown;
+
+    [Header("Navigation")]
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private Button saveButton;
+    [SerializeField] private Button loadButton;
+    [SerializeField] private Button deleteSaveButton;
 
     private void Start()
     {
-        // 1. Load the saved language
+        // 1. Setup Language
         LocalizationManager.LoadLanguage();
-
-        // 2. Set the dropdown visual to match the saved language
-        // (SetValueWithoutNotify prevents infinite loops if you have logic there)
         langDropdown.SetValueWithoutNotify(LocalizationManager.CurrentLanguage);
 
+        // 2. Setup Resolution
         SetupResolutions();
+
+        // 3. Initialize Audio Sliders (So they don't snap to 0 when menu opens)
+        // We assume the slider goes from 0.001 to 1
+        float currentMusicVol;
+        audioMixer.GetFloat("MusicVol", out currentMusicVol);
+        musicSlider.value = Mathf.Pow(10, currentMusicVol / 20); // Convert dB back to linear
+
+        float currentSFXVol;
+        audioMixer.GetFloat("SFXVol", out currentSFXVol);
+        sfxSlider.value = Mathf.Pow(10, currentSFXVol / 20);
+
+        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        if (currentScene == "MainMenu")
+        {
+            // IN MAIN MENU:
+            mainMenuButton.interactable = false; 
+            saveButton.interactable = false;     
+            loadButton.interactable = SaveSystem.SaveFileExists(); 
+        }
+        else
+        {
+            // IN GAME (Level 1, etc):
+            mainMenuButton.interactable = true;  // Can go back to menu
+            saveButton.interactable = true;      // Can save progress
+            loadButton.interactable = SaveSystem.SaveFileExists();
+        }
+
+        if (deleteSaveButton != null)
+        {
+            deleteSaveButton.interactable = SaveSystem.SaveFileExists();
+        }
     }
 
-    // --- AUDIO LOGIC ---
-    public void SetMusicVolume(float volume)
+    
+
+// --- AUDIO LOGIC ---
+public void SetMusicVolume(float volume)
     {
-        // Convert 0.001-1 to -80dB to 0dB
-        float db = Mathf.Log10(volume) * 20;
-        if (volume == 0) db = -80;
-        audioMixer.SetFloat("MusicVol", db);
+        // Fix: Check for 0 BEFORE math to avoid errors
+        if (volume <= 0.001f)
+        {
+            audioMixer.SetFloat("MusicVol", -80);
+        }
+        else
+        {
+            float db = Mathf.Log10(volume) * 20;
+            audioMixer.SetFloat("MusicVol", db);
+        }
     }
 
     public void SetSFXVolume(float volume)
     {
-        float db = Mathf.Log10(volume) * 20;
-        if (volume == 0) db = -80;
-        audioMixer.SetFloat("SFXVol", db);
-    }
-
-    public void ToggleMusic(bool isMuted)
-    {
-        // If Toggle is Checked (Muted) -> Volume 0. 
-        // If Unchecked (Sound On) -> Restore slider value.
-        SetMusicVolume(isMuted ? 0 : musicSlider.value);
-    }
-
-    public void ToggleSFX(bool isMuted)
-    {
-        SetSFXVolume(isMuted ? 0 : sfxSlider.value);
+        if (volume <= 0.001f)
+        {
+            audioMixer.SetFloat("SFXVol", -80);
+        }
+        else
+        {
+            float db = Mathf.Log10(volume) * 20;
+            audioMixer.SetFloat("SFXVol", db);
+        }
     }
 
     // --- RESOLUTION LOGIC ---
     private void SetupResolutions()
     {
         resDropdown.ClearOptions();
-        List<string> options = new List<string> { "1920 x 1080", "3840 x 2160", "2880 x 1800" };
+        List<string> options = new List<string> { "1920x1080", "4k", "2880x1800"};
         resDropdown.AddOptions(options);
     }
 
@@ -81,30 +120,82 @@ public class SettingsMenu : MonoBehaviour
         LocalizationManager.SetLanguage(index);
     }
 
-    // --- EXIT / CLOSE LOGIC ---
+    // --- SAVE / LOAD / EXIT ---
+    public void SaveGame()
+    {
+        // 1. Create Data Container
+        GameData data = new GameData();
+        data.levelToLoad = SceneManager.GetActiveScene().name;
+
+        // 2. Pull Stats from the "Brain" (GameSession)
+        if (GameSession.Instance != null)
+        {
+            data.chests = GameSession.Instance.chests; 
+            data.deaths = GameSession.Instance.deaths;
+            data.timePlayed = GameSession.Instance.timePlayed;
+        }
+
+        // 3. Write to File
+        SaveSystem.SaveGame(data);
+        Debug.Log("Game Saved!");
+    }
+
+    public void LoadGame()
+    {
+        GameData data = SaveSystem.LoadGame();
+        if (data != null)
+        {
+       
+            if (GameSession.Instance != null)
+            {
+                GameSession.Instance.chests = data.chests;
+                GameSession.Instance.deaths = data.deaths;
+                GameSession.Instance.timePlayed = data.timePlayed;
+            }
+
+            SceneManager.LoadScene(data.levelToLoad);
+        }
+    }
+
+public void DeleteGame()
+{
+    // 1. Delete the physical file
+    SaveSystem.DeleteSave();
+
+    // 2. Update UI immediately
+    if (loadButton != null) loadButton.interactable = false;
+    if (deleteSaveButton != null) deleteSaveButton.interactable = false;
+
+    // 3. Optional: Reset in-game stats if we are currently playing
+    if (GameSession.Instance != null)
+    {
+        GameSession.Instance.ResetStats();
+    }
+}
+
+public void GoToMainMenu()
+    {
+        Time.timeScale = 1f; // IMPORTANT: Unpause time before leaving!
+        SceneManager.LoadScene("MainMenu"); // Make sure your menu scene is named exactly this
+    }
+
     public void CloseSettings()
     {
-        // 1. Try to find the PauseManager (Level Logic)
-        PauseManager pm = FindFirstObjectByType<PauseManager>();
+        // 1. Check if a PauseManager exists (Are we in a level?)
+        // (Note: Use FindObjectOfType for older Unity, FindFirstObjectByType for Unity 2023+)
+        PauseManager pm = Object.FindFirstObjectByType<PauseManager>();
 
         if (pm != null)
         {
-            // If we are in-game, let the Manager handle unpausing/closing
+            // CASE A: We are In-Game
+            // Let the PauseManager handle the resume (resetting time, locking cursor, etc.)
             pm.ResumeGame();
         }
         else
         {
-            // 2. If no Manager found (Main Menu), just hide this panel
+            // CASE B: We are in the Main Menu
+            // Just hide this settings panel. No time manipulation needed.
             gameObject.SetActive(false);
         }
-    }
-
-    // --- SAVE LOGIC ---
-    public void SaveGame()
-    {
-        GameData data = new GameData();
-        data.levelToLoad = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        SaveSystem.SaveGame(data);
-        Debug.Log("Game Saved manually.");
     }
 }

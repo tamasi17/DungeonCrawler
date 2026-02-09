@@ -26,6 +26,7 @@ public class PlayerAnimator : MonoBehaviour
     void Update()
     {
         if (isDead) return;
+        if (Time.timeScale == 0f) return;
 
         // 1. Read Input
         float x = Input.GetAxisRaw("Horizontal");

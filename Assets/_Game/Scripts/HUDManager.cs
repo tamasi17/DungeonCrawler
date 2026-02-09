@@ -23,7 +23,7 @@ public class HUDManager : MonoBehaviour
         // Initialize with current values so it doesn't pop up instantly on load
         if (GameSession.Instance != null)
         {
-            lastChests = GameSession.Instance.chest;
+            lastChests = GameSession.Instance.chests;
             lastDeaths = GameSession.Instance.deaths;
         }
     }
@@ -48,9 +48,9 @@ public class HUDManager : MonoBehaviour
         }
 
         // Check for Data Changes (Chests)
-        if (GameSession.Instance.chest != lastChests)
+        if (GameSession.Instance.chests != lastChests)
         {
-            lastChests = GameSession.Instance.chest;
+            lastChests = GameSession.Instance.chests;
             ShowHUD();
         }
 
@@ -79,7 +79,7 @@ public class HUDManager : MonoBehaviour
         }
 
         // --- UPDATE TEXT (Always update so it's ready when shown) ---
-        chestText.text = " " + GameSession.Instance.chest;
+        chestText.text = " " + GameSession.Instance.chests;
         deathText.text = " " + GameSession.Instance.deaths;
 
         float t = GameSession.Instance.timePlayed;
