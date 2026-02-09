@@ -47,6 +47,8 @@ public class GameSession : MonoBehaviour
         deaths++;
     }
 
+
+
     // Call this when you Load Game to restore saved stats
     public void LoadStats(int loadedChests, int loadedDeaths, float loadedTime)
     {

@@ -19,8 +19,14 @@ public class SettingsMenu : MonoBehaviour
 
     private void Start()
     {
+        // 1. Load the saved language
+        LocalizationManager.LoadLanguage();
+
+        // 2. Set the dropdown visual to match the saved language
+        // (SetValueWithoutNotify prevents infinite loops if you have logic there)
+        langDropdown.SetValueWithoutNotify(LocalizationManager.CurrentLanguage);
+
         SetupResolutions();
-        // SetupLanguage(); // Call this if you want to auto-select current language
     }
 
     // --- AUDIO LOGIC ---
@@ -72,17 +78,7 @@ public class SettingsMenu : MonoBehaviour
     // --- LANGUAGE LOGIC ---
     public void SetLanguage(int index)
     {
-        // Index 0 = English, Index 1 = Spanish
-        string lang = index == 0 ? "English" : "Spanish";
-        PlayerPrefs.SetString("Language", lang);
-
-        // Find all language text objects and update them immediately
-        // (Assuming you used the LanguageText script from before)
-        LanguageText[] allTexts = FindObjectsByType<LanguageText>(FindObjectsSortMode.None);
-        foreach (LanguageText txt in allTexts)
-        {
-            txt.UpdateLanguage();
-        }
+        LocalizationManager.SetLanguage(index);
     }
 
     // --- EXIT / CLOSE LOGIC ---
