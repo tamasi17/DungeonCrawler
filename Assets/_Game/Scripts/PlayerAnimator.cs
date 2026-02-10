@@ -12,6 +12,9 @@ public class PlayerAnimator : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down; // Default facing direction
+
+    private PlayerStamina staminaSystem;
+
     private bool isSprinting;
     private bool isDead = false;
     private float stopTimer;
@@ -21,6 +24,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        staminaSystem = GetComponent<PlayerStamina>();
     }
 
     void Update()
@@ -31,7 +35,21 @@ public class PlayerAnimator : MonoBehaviour
         // 1. Read Input
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
-        isSprinting = Input.GetKey(KeyCode.LeftShift);
+
+        bool wantsToSprint = Input.GetKey(KeyCode.LeftShift);
+
+        // We only sprint if:
+        // 1. Shift is held
+        // 2. We are actually moving (optional, but saves stamina while standing still)
+        // 3. The Stamina System exists AND says "OK"
+        if (wantsToSprint && moveInput.magnitude > 0 && staminaSystem != null && staminaSystem.CanSprint)
+        {
+            isSprinting = true;
+        }
+        else
+        {
+            isSprinting = false;
+        }
 
         moveInput = new Vector2(x, y).normalized;
 
