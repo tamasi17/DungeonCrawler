@@ -272,18 +272,19 @@ MonoBehaviour:
   maxSprintTime: 1.5
   recoverySpeed: 1
   sprintLight: {fileID: 1387479835}
+  playerSprite: {fileID: 171847831}
   heatGradient:
     serializedVersion: 2
-    key0: {r: 0.08627451, g: 0.41960788, b: 0.86666673, a: 1}
-    key1: {r: 0, g: 0.11614168, b: 0.6509434, a: 1}
-    key2: {r: 1, g: 0.12923807, b: 0, a: 0}
+    key0: {r: 0.18178178, g: 0.76513547, b: 0.8962264, a: 1}
+    key1: {r: 0, g: 0.427904, b: 0.9716981, a: 1}
+    key2: {r: 1, g: 0.1273585, b: 0.14424832, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 46453
+    ctime1: 39707
     ctime2: 65535
     ctime3: 0
     ctime4: 0
@@ -303,9 +304,14 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   minRadius: 0.3
-  maxRadius: 0.8
+  maxRadius: 0.9
   hardness: 0.9
-  baseIntensity: 0.4
+  baseIntensity: 0.6
+--- !u!212 &171847831 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3557955070489072590, guid: af558d3c96267614894f8706ab8c98ec, type: 3}
+  m_PrefabInstance: {fileID: 171847815}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &306241828
 GameObject:
   m_ObjectHideFlags: 0

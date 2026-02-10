@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.Universal; // For Light2D
 
 public class PlayerStamina : MonoBehaviour
 {
@@ -7,25 +7,27 @@ public class PlayerStamina : MonoBehaviour
     public float maxSprintTime = 3.0f;
     public float recoverySpeed = 1.0f;
 
-    [Header("Visuals")]
-    public Light2D sprintLight;
-    public Gradient heatGradient;
+    [Header("Visuals - The Combo")]
+    public Light2D sprintLight;       // The Glow
+    public SpriteRenderer playerSprite; // The Body
+    public Gradient heatGradient;     // White -> Orange -> Red
 
-    [Header("Circle Shape")]
+    [Header("Light Shape")]
     public float minRadius = 0.5f;
-    public float maxRadius = 2.5f;
-    [Range(0f, 1f)]
-    public float hardness = 0.95f; // 1.0 = Perfect hard circle, 0.0 = Very soft
-
-    [Header("Intensity")]
-    public float baseIntensity = 2.0f;
+    public float maxRadius = 3.0f;
+    [Range(0f, 1f)] public float hardness = 0.9f; // 1 = Solid Circle, 0 = Fuzzy
+    public float baseIntensity = 1.0f; // Keep this low (1.0) to avoid "white blowout"
 
     // State
     private float currentHeat = 0f;
-    private bool mustCooldown = false; // The lock for "Mid Tank" logic
+    private bool mustCooldown = false; // The Lock
 
-    // We can only sprint if the cooldown lock is OFF
     public bool CanSprint => !mustCooldown;
+
+    private void Start()
+    {
+        if (playerSprite == null) playerSprite = GetComponent<SpriteRenderer>();
+    }
 
     private void Update()
     {
@@ -38,77 +40,80 @@ public class PlayerStamina : MonoBehaviour
         bool isMoving = Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0;
         bool tryingToSprint = Input.GetKey(KeyCode.LeftShift);
 
-        // LOGIC: If we are trying to sprint, moving, and NOT locked out
+        // LOGIC: Heat up only if moving, holding shift, and NOT locked out
         if (tryingToSprint && isMoving && !mustCooldown)
         {
-            // HEATING UP
             currentHeat += Time.deltaTime;
 
-            // Did we hit the limit?
+            // Hit the limit?
             if (currentHeat >= maxSprintTime)
             {
                 currentHeat = maxSprintTime;
-                mustCooldown = true; // Lock it because we hit max
-                Debug.Log("Overheated! Full cooldown required.");
+                mustCooldown = true; // Lock immediately
+                Debug.Log("Overheat! Cooldown locked.");
             }
         }
         else
         {
-            // COOLING DOWN
-
-            // If we were sprinting but stopped (let go of key), lock it immediately!
+            // LOCK LOGIC: If we have ANY heat and let go of Shift, lock it.
             if (currentHeat > 0 && !mustCooldown && !tryingToSprint)
             {
                 mustCooldown = true;
             }
 
+            // Cool down
             currentHeat -= Time.deltaTime * recoverySpeed;
 
-            // Only unlock when we hit absolute zero
+            // Unlock only at absolute zero
             if (currentHeat <= 0)
             {
                 currentHeat = 0;
-                mustCooldown = false; // UNLOCK
+                mustCooldown = false;
             }
         }
     }
 
     private void UpdateVisuals()
     {
-        if (sprintLight == null) return;
-
         float heatPercent = currentHeat / maxSprintTime;
+        Color targetColor = heatGradient.Evaluate(heatPercent);
 
-        // 1. COLOR
-        sprintLight.color = heatGradient.Evaluate(heatPercent);
-
-        // 2. SIZE & HARD EDGES
-        float targetRadius = Mathf.Lerp(minRadius, maxRadius, heatPercent);
-
-        // Set Outer Radius
-        sprintLight.pointLightOuterRadius = targetRadius;
-        // Set Inner Radius close to Outer to create a "Hard Edge"
-        sprintLight.pointLightInnerRadius = targetRadius * hardness;
-
-        // 3. INTENSITY & FLICKER
-        if (mustCooldown)
+        // --- PART 1: THE BODY (SPRITE) ---
+        if (playerSprite != null)
         {
-            // If we are locked out (cooling down), pulse slowly
-            // Use 'PingPong' for a sharp linear bounce instead of smooth Sine wave
-            float pulse = Mathf.PingPong(Time.time * 2.0f, 1.0f); // 0 to 1
-            sprintLight.intensity = baseIntensity * (0.5f + pulse);
+            // Safety: Always blend from WHITE (Original Sprite) to the Target Color
+            // If we just used targetColor, and your gradient started Black, you'd disappear!
+            playerSprite.color = Color.Lerp(Color.white, targetColor, heatPercent);
         }
-        else if (heatPercent > 0.8f) // Warning Phase (80%+)
+
+        // --- PART 2: THE GLOW (LIGHT) ---
+        if (sprintLight != null)
         {
-            // Aggressive Strobe Flicker
-            // Randomly snapping between 0.5x and 1.5x brightness
-            float strobe = (Random.value > 0.5f) ? 1.5f : 0.5f;
-            sprintLight.intensity = baseIntensity * strobe;
-        }
-        else
-        {
-            // Normal Growth (Fade in from 0)
-            sprintLight.intensity = Mathf.Lerp(0f, baseIntensity, heatPercent);
+            // A. Color & Shape
+            sprintLight.color = targetColor;
+
+            float currentRad = Mathf.Lerp(minRadius, maxRadius, heatPercent);
+            sprintLight.pointLightOuterRadius = currentRad;
+            sprintLight.pointLightInnerRadius = currentRad * hardness; // Hard Edge Logic
+
+            // B. Intensity & Flicker
+            if (mustCooldown)
+            {
+                // Cooldown: Pulse the light slowly (Breathing effect)
+                float pulse = Mathf.PingPong(Time.time, 0.5f) + 0.5f; // 0.5 to 1.0
+                sprintLight.intensity = baseIntensity * pulse;
+            }
+            else if (heatPercent > 0.8f)
+            {
+                // Warning (80%+): Strobe flicker (Square wave)
+                float strobe = (Random.value > 0.5f) ? 1.2f : 0.8f;
+                sprintLight.intensity = baseIntensity * strobe;
+            }
+            else
+            {
+                // Normal: Fade in from 0 intensity
+                sprintLight.intensity = Mathf.Lerp(0f, baseIntensity, heatPercent);
+            }
         }
     }
 
