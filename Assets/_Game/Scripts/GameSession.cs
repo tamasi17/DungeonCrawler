@@ -83,6 +83,12 @@ public class GameSession : MonoBehaviour
             }
         }
 
+        PlayerAnimator player = FindFirstObjectByType<PlayerAnimator>();
+        if (player != null && data.currentSprintSpeed > 0) // Check > 0 so we don't load "0" by mistake
+        {
+            player.sprintSpeed = data.currentSprintSpeed;
+        }
+
         Debug.Log("Game Session loaded successfully.");
     }
 

@@ -1,12 +1,13 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerAnimator : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float sprintSpeed = 8f;
+    [SerializeField] public float walkSpeed = 5f;
+    [SerializeField] public float sprintSpeed = 8f;
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -14,6 +15,8 @@ public class PlayerAnimator : MonoBehaviour
     private Vector2 lastMoveDirection = Vector2.down; // Default facing direction
 
     private PlayerStamina staminaSystem;
+
+    private bool isLocked = false;
 
     private bool isSprinting;
     private bool isDead = false;
@@ -25,12 +28,24 @@ public class PlayerAnimator : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         staminaSystem = GetComponent<PlayerStamina>();
+
     }
 
     void Update()
     {
         if (isDead) return;
         if (Time.timeScale == 0f) return;
+
+        if (isLocked)
+        {
+            // 1. Kill the input variable so FixedUpdate doesn't use old data
+            moveInput = Vector2.zero;
+
+            // 2. Kill the animation so we don't look like we are walking in place
+            UpdateAnimator(false);
+
+            return;
+        }
 
         // 1. Read Input
         float x = Input.GetAxisRaw("Horizontal");
@@ -76,6 +91,13 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (isDead) return;
 
+        if (isLocked)
+        {
+            // Force physics to stop immediately
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         // 4. Move the Physics Body
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
         rb.linearVelocity = moveInput * currentSpeed;
@@ -93,6 +115,32 @@ public class PlayerAnimator : MonoBehaviour
 
         // "IsSprinting" handles the transition from Walk -> Sprint
         animator.SetBool("IsSprinting", isSprinting);
+    }
+
+    public void UpgradeSpeed(float amount)
+    {
+        sprintSpeed += amount;
+
+        walkSpeed += amount * 0.5f; 
+
+        Debug.Log("SPEED UPGRADED! New Sprint Speed: " + sprintSpeed);
+    }
+
+    public void LockMovement(float duration)
+    {
+        StartCoroutine(LockRoutine(duration));
+    }
+
+    private IEnumerator LockRoutine(float duration)
+    {
+        isLocked = true;
+
+        // Optional: Play an "Item Get" animation here if you have one
+        // GetComponent<Animator>().SetTrigger("Pickup");
+
+        yield return new WaitForSeconds(duration);
+
+        isLocked = false;
     }
 
     // Call this method from your Health/Damage script

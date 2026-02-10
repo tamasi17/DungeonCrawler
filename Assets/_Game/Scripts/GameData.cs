@@ -9,6 +9,7 @@ public class GameData
     public int deaths;     
     public float timePlayed;
     public List<string> collectedItemsID;
+    public float currentSprintSpeed;
 
 
 

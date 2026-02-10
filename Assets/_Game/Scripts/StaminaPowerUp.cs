@@ -8,6 +8,8 @@ public class StaminaPowerUp : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+
+
             // 1. Find the system
             PlayerStamina stamina = other.GetComponent<PlayerStamina>();
 

@@ -136,6 +136,18 @@ public void SetMusicVolume(float volume)
             data.collectedItemsID = new List<string>(GameSession.Instance.collectedItems);
         }
 
+        PlayerAnimator player = FindFirstObjectByType<PlayerAnimator>();
+
+        if (player != null)
+        {
+            data.currentSprintSpeed = player.sprintSpeed;
+        }
+        else
+        {
+            
+            data.currentSprintSpeed = 10f; 
+        }
+
         // 3. Write to File
         SaveSystem.SaveGame(data);
         Debug.Log("Game Saved!");
