@@ -36,9 +36,39 @@ public class Health : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         isDead = true;
+
+        // 1. Disable controls/animation so they stop moving
         GetComponent<PlayerAnimator>().enabled = false;
+
+        // 2. Tell GameSession "I died"
+        // (GameSession will increment the counter)
         GameSession.Instance.AddDeath();
+
         Debug.Log($"{gameObject.name} has died.");
         OnDie?.Invoke();
+
+        
+        if (GameSession.Instance.deaths < GameSession.Instance.maxDeaths)
+        {
+            Debug.Log("Death Count: " + GameSession.Instance.deaths + ". Reloading Level...");
+            StartCoroutine(ReloadLevelRoutine());
+        }
+        else
+        {
+            Debug.Log("Death Limit Reached! Waiting for GameSession to switch scenes...");
+        }
     }
+
+    // Coroutine to wait a moment before resetting (so we see the death animation)
+    private System.Collections.IEnumerator ReloadLevelRoutine()
+    {
+        yield return new WaitForSeconds(1.0f); // Wait 1 second
+
+        // Reload the current scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+        );
+    }
+
+
 }

@@ -29,6 +29,12 @@ public class PlayerAnimator : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         staminaSystem = GetComponent<PlayerStamina>();
 
+        // Start the global timer when the player spawns
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.StartLevel();
+        }
+
     }
 
     void Update()

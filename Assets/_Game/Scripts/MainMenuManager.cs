@@ -30,6 +30,14 @@ public class MainMenu : MonoBehaviour
         // 1. Delete old save (optional, but cleaner)
         SaveSystem.DeleteSave();
 
+        // 1. Check if a session already exists from a previous game
+        if (GameSession.Instance != null)
+        {
+            // 2. WIPE IT CLEAN! 
+            // This sets deaths to 0, chests to 0, time to 0.
+            GameSession.Instance.ResetStats();
+        }
+
         // 2. Load the first level
         SceneManager.LoadScene("Level1");
     }

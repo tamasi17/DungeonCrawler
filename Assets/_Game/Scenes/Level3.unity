@@ -365,6 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedIncrease: 8
+  freezeDuration: 1
   pickupEffect: {fileID: 6572392209545310166, guid: 7c3973288b3786f4dad9b8dfd7cbbf3d, type: 3}
 --- !u!1001 &171847815
 PrefabInstance:
@@ -59870,6 +59871,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5752370960930751991, guid: 020559c160ec8c54a9a3b91ffa34b2e9, type: 3}
+      propertyPath: maxDeaths
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5752370960930751991, guid: 020559c160ec8c54a9a3b91ffa34b2e9, type: 3}
+      propertyPath: endSceneName
+      value: End
+      objectReference: {fileID: 0}
     - target: {fileID: 7074249128696490871, guid: 020559c160ec8c54a9a3b91ffa34b2e9, type: 3}
       propertyPath: m_Name
       value: GameManager
