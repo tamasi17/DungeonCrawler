@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
-    // Escribe un nombre ÚNICO en el inspector para cada cofre (ej: "Level1_Chest_Hidden")
+   
     [SerializeField] private string chestID;
+    [SerializeField] private AudioClip openSound;
 
     private void Start()
     {
@@ -41,6 +42,12 @@ public class Chest : MonoBehaviour
             GameSession.Instance.chests++; // Sumar al total
             GameSession.Instance.AddCollectedItem(chestID); // Recordar ESTE cofre específico
             Debug.Log("Open Chest!");
+        }
+
+       
+        if (openSound != null)
+        {
+            GameObject.Find("AudioManager").GetComponent<AudioSource>().PlayOneShot(openSound);
         }
 
         // Sonido, partículas...

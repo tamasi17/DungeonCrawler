@@ -3,11 +3,15 @@ using UnityEngine;
 public class SpeedPowerUp : MonoBehaviour
 {
     [Header("Settings")]
-    public float speedIncrease = 5.0f;
-    public float freezeDuration = 1.0f;// How much faster? (e.g., from 8 to 10)
+    public float speedIncrease = 10.0f;
+    public float freezeDuration = 1.0f;
+ 
 
     [Header("Visuals")]
-    public GameObject pickupEffect; // Optional: Particle system to spawn
+    public GameObject pickupEffect;
+    public AudioClip pickupSound;
+
+    private bool isCollected = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -21,6 +25,12 @@ public class SpeedPowerUp : MonoBehaviour
                 controller.UpgradeSpeed(speedIncrease);
 
                 controller.LockMovement(freezeDuration);
+
+                if (AudioManager.instance != null && pickupSound != null)
+                {
+                    // Reproduce el sonido sin interrumpir la música
+                    AudioManager.instance.musicSource.PlayOneShot(pickupSound);
+                }
 
                 // 2. VISUALS FIX: Use 'other.transform.position' (The Player)
                 if (pickupEffect != null)
