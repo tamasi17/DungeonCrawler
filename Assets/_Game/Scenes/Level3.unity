@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884fe3cf6733ed5419067d764732515f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedIncrease: 10
+  speedIncrease: 7
   freezeDuration: 1
   pickupEffect: {fileID: 6572392209545310166, guid: 7c3973288b3786f4dad9b8dfd7cbbf3d, type: 3}
   pickupSound: {fileID: 8300000, guid: 14b6fb9b2ee66b441bf09f2afa9c7f9a, type: 3}

@@ -18,6 +18,10 @@ public class GameSession : MonoBehaviour
     [Header("Session Info")]
     public int totalChestsInLevel = 0;
 
+    [Header("Power Ups")]
+    public float extraSpeed = 0f;
+    public bool hasSpeedUpgrade = false;
+
     // State Flags
     public bool isTimerRunning = false;
     public bool playerWon = false; // True = Victory, False = Game Over

@@ -8,20 +8,19 @@ public class PlayerAnimator : MonoBehaviour
     [Header("Settings")]
     [SerializeField] public float walkSpeed = 5f;
     [SerializeField] public float sprintSpeed = 8f;
-
     private Animator animator;
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down; // Default facing direction
-
     private PlayerStamina staminaSystem;
-
     private bool isLocked = false;
-
     private bool isSprinting;
     private bool isDead = false;
     private float stopTimer;
-    [SerializeField] private float stopDelay = 0.15f; // Small buffer time
+    [SerializeField] private float stopDelay = 0.15f;
+    [Header("Movement Settings")]
+    public float baseSpeed = 5f; // Tu velocidad inicial de diseño
+    private float currentSpeed;
 
     void Awake()
     {
@@ -33,6 +32,9 @@ public class PlayerAnimator : MonoBehaviour
         if (GameSession.Instance != null)
         {
             GameSession.Instance.StartLevel();
+            float bonus = GameSession.Instance.extraSpeed;
+            walkSpeed += bonus;
+            sprintSpeed += bonus;
         }
 
     }
@@ -93,6 +95,20 @@ public class PlayerAnimator : MonoBehaviour
         UpdateAnimator(isMoving);
     }
 
+    public void UpgradeSpeed(float amount)
+    {
+        // Aumentamos las velocidades del jugador actual
+        walkSpeed += amount;
+        sprintSpeed += amount;
+
+        // IMPORTANTE: Guardamos el bono acumulado en el GameSession 
+        // para que sobreviva al cambio de escena
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.extraSpeed += amount;
+        }
+    }
+
     void FixedUpdate()
     {
         if (isDead) return;
@@ -123,14 +139,6 @@ public class PlayerAnimator : MonoBehaviour
         animator.SetBool("IsSprinting", isSprinting);
     }
 
-    public void UpgradeSpeed(float amount)
-    {
-        sprintSpeed += amount;
-
-        walkSpeed += amount * 0.5f; 
-
-        Debug.Log("SPEED UPGRADED! New Sprint Speed: " + sprintSpeed);
-    }
 
     public void LockMovement(float duration)
     {

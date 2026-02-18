@@ -43360,7 +43360,7 @@ MonoBehaviour:
   openPosition: {fileID: 1955388963}
   openSpeed: 1.3
   closeSpeed: 15
-  holdTime: 0.7
+  holdTime: 0.3
 --- !u!61 &1065070407
 BoxCollider2D:
   m_ObjectHideFlags: 0

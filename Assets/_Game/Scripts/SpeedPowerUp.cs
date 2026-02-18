@@ -3,7 +3,7 @@ using UnityEngine;
 public class SpeedPowerUp : MonoBehaviour
 {
     [Header("Settings")]
-    public float speedIncrease = 10.0f;
+    public float speedIncrease = 7.0f;
     public float freezeDuration = 1.0f;
  
 
