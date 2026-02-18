@@ -69,4 +69,11 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Quitting Game...");
         Application.Quit();
     }
+
+    public void OnMainMenuClicked()
+    {
+
+        Debug.Log("Back to main menu...");
+        SceneManager.LoadScene("MainMenu");
+    }
 }

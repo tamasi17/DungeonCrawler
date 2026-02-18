@@ -27,12 +27,13 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Button saveButton;
     [SerializeField] private Button loadButton;
     [SerializeField] private Button deleteSaveButton;
+    [SerializeField] private Button exitSettings;
 
     private void OnEnable()
     {
 
         // 2. Refresh Resolution (optional, but good practice)
-        if (resDropdown != null) resDropdown.SetValueWithoutNotify(GetCurrentResolutionIndex());
+      //  if (resDropdown != null) resDropdown.SetValueWithoutNotify(GetCurrentResolutionIndex());
         resDropdown.RefreshShownValue();
 
         // 3. THE FIX: Refresh Buttons based on the CURRENT scene
@@ -107,46 +108,64 @@ public class SettingsMenu : MonoBehaviour
     }
 
     // --- RESOLUTION LOGIC ---
+    private Resolution[] resolutions;
     private void SetupResolutions()
     {
+        // 1. Obtener resoluciones del sistema
+        resolutions = Screen.resolutions;
         resDropdown.ClearOptions();
-        List<string> options = new List<string> { "1920x1080", "4k", "2880x1800"};
+
+        List<string> options = new List<string>();
+        int currentResolutionIndex = 0;
+
+        // Usamos un Hashset o una lista de strings para evitar duplicados de hercios
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            // Formateamos el string para comparar
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+
+            if (!options.Contains(option))
+            {
+                options.Add(option);
+
+                // Comprobar si es la resolución que el monitor tiene ahora mismo
+                if (resolutions[i].width == Screen.currentResolution.width &&
+                    resolutions[i].height == Screen.currentResolution.height)
+                {
+                    currentResolutionIndex = options.Count - 1;
+                }
+            }
+        }
+
+        // 2. Invertir la lista para que las resoluciones altas salgan arriba
+        options.Reverse();
+        // Al invertir las opciones, también tenemos que invertir el índice seleccionado
+        currentResolutionIndex = (options.Count - 1) - currentResolutionIndex;
+
         resDropdown.AddOptions(options);
+        resDropdown.value = currentResolutionIndex;
+        resDropdown.RefreshShownValue();
     }
 
     public void SetResolution(int index)
     {
-        switch (index)
-        {
-            case 0: Screen.SetResolution(1920, 1080, true); break;
-            case 1: Screen.SetResolution(3840, 2160, true); break;
-            case 2: Screen.SetResolution(2880, 1800, true); break;
-        }
+        // Como invertimos la lista en el Dropdown (options.Reverse), 
+        // necesitamos buscar la resolución correcta en el array original.
+        // La opción 0 del dropdown ahora es la última del array 'resolutions'
 
-        Debug.Log($"Game Window is now: {Screen.width}x{Screen.height}");
+        string selectedOption = resDropdown.options[index].text;
+        string[] dimensions = selectedOption.Split('x');
+        int width = int.Parse(dimensions[0].Trim());
+        int height = int.Parse(dimensions[1].Trim());
+
+        Screen.SetResolution(width, height, Screen.fullScreen);
+
+        Debug.Log($"Cambiando a: {width}x{height}");
     }
 
-    private int GetCurrentResolutionIndex()
-    {
-        // Check width to decide which index matches
-        // 0 = 1920x1080
-        // 1 = 3840x2160 (4k)
-        // 2 = 2880x1800
 
-        int width = Screen.width;
-        int height = Screen.height;
-
-        // Strict check (Width AND Height must match)
-        if (width == 1920 && height == 1080) return 0;
-        if (width == 3840 && height == 2160) return 1;
-        if (width == 2880 && height == 1800) return 2;
-
-        // Fallback: If the window is some weird custom size, default to 1080p (0)
-        return 0;
-    }
-
-    // --- LANGUAGE LOGIC ---
-    public void SetLanguage(int index)
+// --- LANGUAGE LOGIC ---
+public void SetLanguage(int index)
     {
         LocalizationManager.SetLanguage(index);
     }

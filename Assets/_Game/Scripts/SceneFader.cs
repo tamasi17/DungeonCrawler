@@ -9,6 +9,10 @@ public class SceneFader : MonoBehaviour
     [SerializeField] private CanvasGroup uiGroup;
     [SerializeField] private float fadeSpeed = 1f;
 
+    [Header("UI Persistence Control")]
+    public GameObject hudPanel;    
+    public GameObject pausePanel; 
+
     private void Start()
     {
         // Whenever a level starts, we assume the screen is black, so we fade IN.
@@ -29,14 +33,15 @@ public class SceneFader : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Este método se ejecuta AUTOMÁTICAMENTE cada vez que cambia la escena
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        StopAllCoroutines(); // Detenemos cualquier fade previo
-        uiGroup.alpha = 1;   // Forzamos negro
+        StopAllCoroutines();
+        uiGroup.alpha = 1;
         uiGroup.blocksRaycasts = true;
         StartCoroutine(FadeIn());
     }
+
+
 
     public void FadeToLevel(string sceneName)
     {
@@ -45,14 +50,19 @@ public class SceneFader : MonoBehaviour
 
     private IEnumerator FadeIn()
     {
-        while (uiGroup.alpha > 0)
+        uiGroup.blocksRaycasts = true; // Bloquea mientras está negro
+        float alpha = 1;
+        while (alpha > 0)
         {
-            uiGroup.alpha -= Time.deltaTime * fadeSpeed;
+            alpha -= Time.deltaTime * fadeSpeed;
+            uiGroup.alpha = alpha;
             yield return null;
         }
         uiGroup.alpha = 0;
-        uiGroup.blocksRaycasts = false; // Let player click things again
+        uiGroup.blocksRaycasts = false; // ¡CLAVE! Libera el ratón para la escena final
     }
+
+
 
     private IEnumerator FadeOut(string sceneName)
     {
