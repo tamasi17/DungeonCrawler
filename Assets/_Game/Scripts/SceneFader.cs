@@ -17,6 +17,27 @@ public class SceneFader : MonoBehaviour
         StartCoroutine(FadeIn());
     }
 
+    private void OnEnable()
+    {
+        // Nos suscribimos al evento de carga de escenas
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        // Nos desuscribimos para evitar errores de memoria
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Este método se ejecuta AUTOMÁTICAMENTE cada vez que cambia la escena
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StopAllCoroutines(); // Detenemos cualquier fade previo
+        uiGroup.alpha = 1;   // Forzamos negro
+        uiGroup.blocksRaycasts = true;
+        StartCoroutine(FadeIn());
+    }
+
     public void FadeToLevel(string sceneName)
     {
         StartCoroutine(FadeOut(sceneName));
@@ -24,13 +45,12 @@ public class SceneFader : MonoBehaviour
 
     private IEnumerator FadeIn()
     {
-        // Fade from 1 (Black) to 0 (Clear)
         while (uiGroup.alpha > 0)
         {
             uiGroup.alpha -= Time.deltaTime * fadeSpeed;
             yield return null;
         }
-
+        uiGroup.alpha = 0;
         uiGroup.blocksRaycasts = false; // Let player click things again
     }
 
