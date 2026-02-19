@@ -114,6 +114,7 @@ public class GameSession : MonoBehaviour
         {
             collectedItems.Add(id);
             Debug.Log("Added item to memory: " + id);
+            //SaveSystem.SaveGame(); 
         }
     }
 

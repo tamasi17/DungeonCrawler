@@ -80,7 +80,7 @@ public class HUDManager : MonoBehaviour
 
         // --- UPDATE TEXT (Always update so it's ready when shown) ---
         chestText.text = " " + GameSession.Instance.chests;
-        deathText.text = " " + GameSession.Instance.deaths;
+        deathText.text = " " + GameSession.Instance.deaths + "/5";
 
         float t = GameSession.Instance.timePlayed;
         string minutes = Mathf.Floor(t / 60).ToString("00");

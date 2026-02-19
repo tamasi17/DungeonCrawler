@@ -643,6 +643,8 @@ MonoBehaviour:
   deaths: 0
   timePlayed: 0
   totalChestsInLevel: 0
+  extraSpeed: 0
+  hasSpeedUpgrade: 0
   isTimerRunning: 0
   playerWon: 0
 --- !u!4 &1250037701
@@ -805,6 +807,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 542906926783628486, guid: 3ca1a85241b8f034898bbd90f447d53e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 228.2433
+      objectReference: {fileID: 0}
+    - target: {fileID: 542906926783628486, guid: 3ca1a85241b8f034898bbd90f447d53e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 60.8166
+      objectReference: {fileID: 0}
+    - target: {fileID: 542906926783628486, guid: 3ca1a85241b8f034898bbd90f447d53e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 8.2693
+      objectReference: {fileID: 0}
+    - target: {fileID: 542906926783628486, guid: 3ca1a85241b8f034898bbd90f447d53e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -233.318
+      objectReference: {fileID: 0}
     - target: {fileID: 650909934915844006, guid: 3ca1a85241b8f034898bbd90f447d53e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

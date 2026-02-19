@@ -5,6 +5,7 @@ public class Chest : MonoBehaviour
    
     [SerializeField] private string chestID;
     [SerializeField] private AudioClip openSound;
+    private bool isOpened = false;
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class Chest : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isOpened)
         {
             Interact();
         }
@@ -36,21 +37,28 @@ public class Chest : MonoBehaviour
 
     void Interact()
     {
+        isOpened = true;
 
         if (GameSession.Instance != null)
         {
             GameSession.Instance.chests++; // Sumar al total
             GameSession.Instance.AddCollectedItem(chestID); // Recordar ESTE cofre específico
-            Debug.Log("Open Chest!");
+            Debug.Log($"Cofre {chestID} guardado. Destruyendo objeto: {gameObject.name}");
         }
 
-       
-        if (openSound != null)
+        // Usamos el Singleton (AudioManager.instance) que es más seguro que buscar por nombre
+        if (AudioManager.instance != null && AudioManager.instance.musicSource != null)
         {
-            GameObject.Find("AudioManager").GetComponent<AudioSource>().PlayOneShot(openSound);
+            AudioManager.instance.musicSource.PlayOneShot(openSound);
+        }
+        else
+        {
+            // Plan B: Si el AudioManager no aparece, usamos PlayClipAtPoint 
+            // para que al menos suene y no de error
+            AudioSource.PlayClipAtPoint(openSound, transform.position);
         }
 
-        // Sonido, partículas...
-        Destroy(gameObject);
+        this.gameObject.SetActive(false);
+        Destroy(transform.root.gameObject);
     }
 }
