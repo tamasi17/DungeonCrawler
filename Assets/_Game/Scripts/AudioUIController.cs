@@ -7,13 +7,16 @@ public class AudioUIController : MonoBehaviour
     public Toggle musicToggle, sfxToggle;
 
     private float lastMusicVol = 0.75f;
+    private float lastSFXVol = 0.75f;
 
     [Header("Feedback de Sonido")]
-    public AudioSource sfxPreviewSource; // Un AudioSource que solo use el canal SFX
-    public AudioClip sfxTestClip;        // El ruidito de prueba
+    public AudioSource sfxPreviewSource; 
+    public AudioClip sfxTestClip;        
 
     private float lastSoundTime;
-    private float soundCooldown = 0.03f; // Para que no sature el oído
+    private float soundCooldown = 0.1f; // Para que no sature el oído
+
+    private bool isUpdatingUI = false;
 
     public void SetLastMusicVol(float val)
     {
@@ -27,31 +30,51 @@ public class AudioUIController : MonoBehaviour
 
     void Start()
     {
-        // Recuperar valores guardados o usar 0.75 como default
         float savedMusic = PlayerPrefs.GetFloat("MusicVol", 0.75f);
         float savedSFX = PlayerPrefs.GetFloat("SFXVol", 0.75f);
+        lastMusicVol = PlayerPrefs.GetFloat("MusicVol", 0.75f);
+        lastSFXVol = PlayerPrefs.GetFloat("SFXVol", 0.75f);
 
-        // Sincronizar Sliders
-        musicSlider.value = savedMusic;
-        sfxSlider.value = savedSFX;
+        // Si el volumen guardado es 0, el toggle debería empezar apagado
+        isUpdatingUI = true;
+        musicSlider.value = lastMusicVol;
+        sfxSlider.value = lastSFXVol;
+        musicToggle.isOn = lastMusicVol > 0.001f;
+        sfxToggle.isOn = lastSFXVol > 0.001f;
+        isUpdatingUI = false;
 
-        // Aplicar al Mixer inmediatamente al arrancar
-        AudioManager.instance.UpdateMixerVolume("MusicVol", savedMusic);
-        AudioManager.instance.UpdateMixerVolume("SFXVol", savedSFX);
+        // Aplicar al Mixer
+        AudioManager.instance.UpdateMixerVolume("MusicVol", lastMusicVol);
+        AudioManager.instance.UpdateMixerVolume("SFXVol", lastSFXVol);
     }
 
     public void OnMusicSliderChanged(float value)
     {
+        if (isUpdatingUI) return;
+
         AudioManager.instance.UpdateMixerVolume("MusicVol", value);
-        if (value > 0.0001f) AudioManager.instance.SetLastMusicVol(value);
+
+        // Si movemos el slider manualmente, actualizamos el Toggle
+        isUpdatingUI = true;
+        musicToggle.isOn = value > 0.001f;
+        if (value > 0.001f) lastMusicVol = value;
+        isUpdatingUI = false;
     }
 
     public void OnSFXSliderChanged(float value)
     {
+        if (isUpdatingUI) return;
+
         AudioManager.instance.UpdateMixerVolume("SFXVol", value);
 
-        // Feedback auditivo: solo suena si ha pasado un pequeño tiempo
-        if (Time.unscaledTime - lastSoundTime > soundCooldown)
+        // Si movemos el slider, actualizamos el Toggle
+        isUpdatingUI = true;
+        sfxToggle.isOn = value > 0.001f;
+        if (value > 0.001f) lastSFXVol = value;
+        isUpdatingUI = false;
+
+        // Feedback sonoro
+        if (Time.unscaledTime - lastSoundTime > soundCooldown && value > 0.001f)
         {
             if (sfxPreviewSource != null && sfxTestClip != null)
             {
@@ -63,37 +86,38 @@ public class AudioUIController : MonoBehaviour
 
     public void OnMusicToggleChanged(bool isOn)
     {
+        if (isUpdatingUI) return;
+
+        isUpdatingUI = true;
         if (isOn)
         {
-            // Restaurar al valor que estaba antes de silenciar
-            float val = AudioManager.instance.GetLastMusicVol();
-            musicSlider.value = val;
-            AudioManager.instance.UpdateMixerVolume("MusicVol", val);
+            // Si encendemos y el valor era 0, rescatamos a 0.75
+            if (lastMusicVol <= 0.001f) lastMusicVol = 0.75f;
+            musicSlider.value = lastMusicVol;
         }
         else
         {
-            // Silencio total pero recordamos la posición del slider
             musicSlider.value = 0;
-            AudioManager.instance.UpdateMixerVolume("MusicVol", 0);
         }
+        AudioManager.instance.UpdateMixerVolume("MusicVol", musicSlider.value);
+        isUpdatingUI = false;
     }
 
     public void OnSFXToggleChanged(bool isOn)
     {
+        if (isUpdatingUI) return;
+
+        isUpdatingUI = true;
         if (isOn)
         {
-            // Restauramos el volumen de SFX (puedes usar un valor fijo o el del slider)
-            float val = sfxSlider.value;
-            if (val <= 0.0001f) val = 0.75f; // Valor de rescate si el slider estaba a cero
-
-            sfxSlider.value = val;
-            AudioManager.instance.UpdateMixerVolume("SFXVol", val);
+            if (lastSFXVol <= 0.001f) lastSFXVol = 0.75f;
+            sfxSlider.value = lastSFXVol;
         }
         else
         {
-            // Silencio total de efectos
             sfxSlider.value = 0;
-            AudioManager.instance.UpdateMixerVolume("SFXVol", 0);
         }
+        AudioManager.instance.UpdateMixerVolume("SFXVol", sfxSlider.value);
+        isUpdatingUI = false;
     }
 }

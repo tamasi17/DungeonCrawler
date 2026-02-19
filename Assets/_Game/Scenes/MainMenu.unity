@@ -718,6 +718,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3525748667334422353, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
+      propertyPath: m_Name
+      value: 'Music '
+      objectReference: {fileID: 0}
     - target: {fileID: 4007797705378393317, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -743,6 +747,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5354394552684166261, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5354394552684166261, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 646416598}
@@ -754,13 +762,17 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: AudioUIController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5418804488065439069, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
+      propertyPath: m_Name
+      value: SFX
+      objectReference: {fileID: 0}
     - target: {fileID: 5863226650627843785, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6451682306458065968, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6451682306458065968, guid: a9c9959ce01d07d4daaed6858cd297d6, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
